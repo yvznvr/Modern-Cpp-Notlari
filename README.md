@@ -258,9 +258,9 @@ filter([](int x){return x>3}, v);   // 4, 5, 6
 
 ### Sağ Değer Referansları
 
-Sağ değerler genellikle atama operatörünün sağ tarafından bulunan herhangi bir tanımlayıcısı(identifier) olmayan değerlerdir. Sol değerler ise kendilerine atama yapılabilen, bellek adreslerine erişlebilen değişkenlerdir.
+Sağ değerler genellikle atama operatörünün sağ tarafından bulunan herhangi bir tanımlayıcısı(identifier) olmayan değerlerdir. Sol değerler ise kendilerine atama yapılabilen, bellek adreslerine erişilebilen değişkenlerdir.
 
-```
+```c
 int a;
 a = 1;  // Burada a sol değer olur
 
@@ -275,7 +275,7 @@ getRef() = 4; // getRef fonksiyonu bir değişken olmamasına rağmen x değişk
 
 Sağ değerler ise geçici nesneler olarak düşünülebilir. Aşağıdaki örneği ele alırsak, getName metodu içinde bir string oluşturur ve bu string'i geri döndürür. Burada getName metodunun döndürdüğü değer geçici adrese yazılır ardından atama operatörü yardımıyla içeriği bir sol değere geçirilir.
 
-```
+```c
 string getName ()
 {
     return "Alex";
@@ -290,7 +290,8 @@ void print(int &&x){cout << rvalue;}    // 2
 
 a = 5;
 print(a);       // lvalue
-print(5);       // 5 değeri rvalue çünkü o an geçici olarak oluşturulup fonksiyona geçirilir, bellek adresi alınamaz
+print(5);       // rvalue
+// 5 değeri rvalue çünkü o an geçici olarak oluşturulup fonksiyona geçirilir, bellek adresi alınamaz
 ```
 
 `int &&` tanımı sağ değer referansı olarak adlandırılabilir. Yukarıdaki örnekte 5 değerinin kopyalanarak değil referans yoluyla print fonksiyonuna geçirilmesini sağlar.

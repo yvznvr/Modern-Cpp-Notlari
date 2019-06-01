@@ -258,20 +258,44 @@ filter([](int x){return x>3}, v);   // 4, 5, 6
 
 ### Sağ Değer Referansları
 
-Sağ değerler genellikle atama operatörünün sağ tarafından bulunan herhangi bir tanımlayıcısı(identifier) olmayan değerlerdir. C++ diline move semantiği ve perfect forwarding gibi katkıları vardır. Örneğin `a=5` ifadesinde a **sağ değer**, 5 ise **sol değerdir.** Aşağıdaki örnekte sağ ve sol değerlerin fonksiyonlara nasıl parametre olarak geçirildiği görülmektedir.
+Sağ değerler genellikle atama operatörünün sağ tarafından bulunan herhangi bir tanımlayıcısı(identifier) olmayan değerlerdir. Sol değerler ise kendilerine atama yapılabilen, bellek adreslerine erişlebilen değişkenlerdir.
+
+```
+int a;
+a = 1;  // Burada a sol değer olur
+
+int x;
+int& getRef () 
+{
+        return x;
+}
+ 
+getRef() = 4; // getRef fonksiyonu bir değişken olmamasına rağmen x değişkeninin adresini döndürdüğü için sol değerdir
+```
+
+Sağ değerler ise geçici nesneler olarak düşünülebilir. Aşağıdaki örneği ele alırsak, getName metodu içinde bir string oluşturur ve bu string'i geri döndürür. Burada getName metodunun döndürdüğü değer geçici adrese yazılır ardından atama operatörü yardımıyla içeriği bir sol değere geçirilir.
+
+```
+string getName ()
+{
+    return "Alex";
+}
+string name = getName();
+```
+Sağ değerlerin atama operatörleri yardımıyla içeriklerinin deep copy yapılarak bir sol değere kopyalanması işleminin getirdiği yavaşlıktan dolayı c++11 ile birlikte sağ değer referansları dile getirilmiştir. Sağ değer referanslarının C++ diline move semantiği ve perfect forwarding gibi katkıları vardır. Aşağıdaki örnekte sağ ve sol değerlerin fonksiyonlara nasıl parametre olarak geçirildiği görülmektedir.
 
 ```c
-void print(int &x){cout << lvalue;}
-void print(int &&x){cout << rvalue;}
+void print(int &x){cout << lvalue;}     // 1
+void print(int &&x){cout << rvalue;}    // 2
 
 a = 5;
 print(a);       // lvalue
-print(5);       // rvalue
+print(5);       // 5 değeri rvalue çünkü o an geçici olarak oluşturulup fonksiyona geçirilir, bellek adresi alınamaz
 ```
 
 `int &&` tanımı sağ değer referansı olarak adlandırılabilir. Yukarıdaki örnekte 5 değerinin kopyalanarak değil referans yoluyla print fonksiyonuna geçirilmesini sağlar.
 
-Eğer yukarıdaki **print** methodlarına ek olara `void print(int x)` fonksiyonuda tanımlanmış olsaydı programımız hata verecekti çünkü derleyici hangi fonksiyonu çağıracağını bilemez. `void print(int x)` fonksiyonu parametre olarak hem sağ hem sol değerleri alabilir.
+Eğer yukarıdaki **print** methodlarına **ek olarak** `void print(int x)` metodu da tanımlanmış olsaydı programımız hata verecekti çünkü derleyici hangi fonksiyonu çağıracağını bilemeyecekti. `void print(int x)` fonksiyonu parametre olarak hem sağ(a) hem sol(5) değerleri alabilir. Örneğin `print(a)` şeklinde bir çağrı yaptığımızda bu çağrı `print(int &x)` ve `print(int x)` metodlarının ikisi içinde geçerli olacaktı.
 
 ### Move Yapısı
 
